@@ -9,7 +9,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "minomuncher-core": "../minomuncher-core",
+    "minomuncher-core": "^0.0.1",
     "rate-limiter-flexible": "^7.1.1"
   }
 }
