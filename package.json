@@ -1,0 +1,15 @@
+{
+  "name": "minomuncher-server",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "minomuncher-core": "../minomuncher-core",
+    "rate-limiter-flexible": "^7.1.1"
+  }
+}
