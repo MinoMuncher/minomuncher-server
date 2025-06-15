@@ -5,6 +5,8 @@ It must be used in conjunction with an official Tetr.io bot account, the rate li
 
 set the TETRIO_USERNAME TETRIO_PASSWORD env variables
 
+use the MINOMUNCHER_PORT env var (default 3000)
+
 # setup
 
 To install dependencies:
