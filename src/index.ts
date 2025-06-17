@@ -38,8 +38,15 @@ function getClientIp(req: Request): string {
 
 const server = Bun.serve({
   port: Number.parseInt(Bun.env.MINOMUNCHER_PORT || "") || 3000,
+  idleTimeout: 60,
   routes: {
     "/status": new Response("OK"),
+    "/supporter/:token": (req) => {
+      if(Bun.env.SUPPORTER_TOKEN && Bun.env.SUPPORTER_TOKEN.length > 0 && req.params.token == Bun.env.SUPPORTER_TOKEN){
+        return new Response("OK")
+      }
+      return Response.json({ message: "invalid token" }, { status: 400 });
+    },
     "/replay/:id": async (req) => {
       try {
         await rateLimiter.consume(getClientIp(req), 1);
@@ -49,7 +56,7 @@ const server = Bun.serve({
       const id = req.params.id;
       let rep: string;
       try {
-        rep = await queryQueue.enqueue(() => downloadReplay(id, token));
+        rep = await queryQueue.enqueue(() => downloadReplay(id, token), validateReqSupporter(req));
       } catch (e) {
         return Response.json(
           { message: "error downloading replay" },
@@ -93,7 +100,7 @@ const server = Bun.serve({
         return Response.json({ message: "rate limted" }, { status: 400 });
       }
       const apiUrl = `https://ch.tetr.io/api/users/${req.params.id}/records/league/recent`;
-      return queryPass(apiUrl);
+      return queryPass(apiUrl, validateReqSupporter(req));
     },
     "/user/:username": async (req) => {
       try {
@@ -102,16 +109,21 @@ const server = Bun.serve({
         return Response.json({ message: "rate limted" }, { status: 400 });
       }
       const apiUrl = `https://ch.tetr.io/api/users/${req.params.username}`;
-      return queryPass(apiUrl);
+      return queryPass(apiUrl, validateReqSupporter(req));
     },
     // Wildcard route for all routes that start with "/api/" and aren't otherwise matched
     "/api/*": Response.json({ message: "Not found" }, { status: 404 }),
   },
 });
 
-async function queryPass(apiUrl: string) {
+function validateReqSupporter<T extends string>(req: Bun.BunRequest<T>){
+  const supporter = req.headers.get("supporter")
+  return (Bun.env.SUPPORTER_TOKEN && Bun.env.SUPPORTER_TOKEN.length > 0 && supporter == Bun.env.SUPPORTER_TOKEN) ? 1 : 0
+}
+
+async function queryPass(apiUrl: string, prio: number) {
   try {
-    const res = await queryQueue.enqueue(() => fetch(apiUrl));
+    const res = await queryQueue.enqueue(() => fetch(apiUrl), prio);
 
     if (!res.ok) {
       return new Response(
