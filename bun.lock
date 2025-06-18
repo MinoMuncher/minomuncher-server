@@ -4,7 +4,7 @@
     "": {
       "name": "server",
       "dependencies": {
-        "minomuncher-core": "^0.0.1",
+        "minomuncher-core": "^0.0.4",
         "rate-limiter-flexible": "^7.1.1",
       },
       "devDependencies": {
@@ -100,7 +100,7 @@
 
     "internmap": ["internmap@1.0.1", "", {}, "sha512-lDB5YccMydFBtasVtxnZ3MRBHuaoE8GKsppq+EchKL2U4nK/DmEpPHNH8MZe5HkMtpSiTSOZwfN0tzYjO/lJEw=="],
 
-    "minomuncher-core": ["minomuncher-core@0.0.1", "", { "dependencies": { "@haelp/teto": "^3.1.2", "d3": "^7.9.0", "d3-sankey": "^0.12.3", "gaussian-mixture": "^0.9.1" } }, "sha512-PAepu8g2qjIYlLII42lPUhxZT38HjoV/O8TTQTvtY1bmc8iUGupN7jd7jXVXhpeHmzLFI5lJzvBJOFz/EInljg=="],
+    "minomuncher-core": ["minomuncher-core@0.0.4", "", { "dependencies": { "@haelp/teto": "^3.1.2", "d3": "^7.9.0", "d3-sankey": "^0.12.3", "gaussian-mixture": "^0.9.1" } }, "sha512-Y6VEz7dsd72O1kQ+64Cnik7OgHD8l0RMS3DUAg5+Zs6plS768dyAvXqr50INHHuCnKSWvZS5i/8cgAX24J4cfQ=="],
 
     "rate-limiter-flexible": ["rate-limiter-flexible@7.1.1", "", {}, "sha512-lsYRcqRSJrKBNt6pMzBJTiCJP5KnwsGWdObMZxd19JFUJRntM+yuHs4/2bs6NZweSLgpsDcykvzyQaumoslWQg=="],
 
