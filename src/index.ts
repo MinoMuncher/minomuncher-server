@@ -4,6 +4,7 @@ import { parseReplay } from "minomuncher-core";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 
 
+const SUPPORTER_IDS = (await Bun.file("supporters.txt").text()).split(/\s+/);
 
 ///important: USE A BOT ACCOUNT
 const TETRIO_USERNAME = Bun.env.TETRIO_USERNAME
@@ -111,6 +112,15 @@ const server = Bun.serve({
       const apiUrl = `https://ch.tetr.io/api/users/${req.params.username}`;
       return queryPass(apiUrl, validateReqSupporter(req));
     },
+    "/discord/:id": async (req) => {
+      try {
+        await rateLimiter.consume(getClientIp(req), 1);
+      } catch (e) {
+        return Response.json({ message: "rate limted" }, { status: 400 });
+      }
+      const apiUrl = `https://ch.tetr.io/api/users/search/discord:id:${req.params.id}`;
+      return queryPass(apiUrl, validateReqSupporter(req));
+    },
     // Wildcard route for all routes that start with "/api/" and aren't otherwise matched
     "/api/*": Response.json({ message: "Not found" }, { status: 404 }),
   },
@@ -118,7 +128,8 @@ const server = Bun.serve({
 
 function validateReqSupporter<T extends string>(req: Bun.BunRequest<T>){
   const supporter = req.headers.get("supporter")
-  return (Bun.env.SUPPORTER_TOKEN && Bun.env.SUPPORTER_TOKEN.length > 0 && supporter == Bun.env.SUPPORTER_TOKEN) ? 1 : 0
+  //what if i was just a pos and inlined everything
+  return (SUPPORTER_IDS.includes(supporter ?? '') || (Bun.env.SUPPORTER_TOKEN && Bun.env.SUPPORTER_TOKEN.length > 0 && supporter == Bun.env.SUPPORTER_TOKEN)) ? 1 : 0
 }
 
 async function queryPass(apiUrl: string, prio: number) {
