@@ -4,7 +4,7 @@
     "": {
       "name": "server",
       "dependencies": {
-        "minomuncher-core": "^0.0.4",
+        "minomuncher-core": "^0.0.5",
         "rate-limiter-flexible": "^7.1.1",
       },
       "devDependencies": {
@@ -16,7 +16,7 @@
     },
   },
   "packages": {
-    "@haelp/teto": ["@haelp/teto@3.1.2", "", {}, "sha512-C6iu7xWiqn+uQY1U7Jy1PxEQeqP5p3ujLix2RhNtw4C7pAnkKrKZlledJ3iPvh84PqHNaKD86hfRM+O1Kjg5ZQ=="],
+    "@haelp/teto": ["@haelp/teto@3.1.5", "", {}, "sha512-pTK0ei7o3x1b9i/9qi1PDU5JrjHtC1RHHEOXHkaoOODcXm5RVtBeK3yMAFyu7UxGjp513GyUWnpiKru0uD0iZw=="],
 
     "@types/bun": ["@types/bun@1.2.16", "", { "dependencies": { "bun-types": "1.2.16" } }, "sha512-1aCZJ/6nSiViw339RsaNhkNoEloLaPzZhxMOYEa7OzRzO41IGg5n/7I43/ZIAW/c+Q6cT12Vf7fOZOoVIzb5BQ=="],
 
@@ -100,7 +100,7 @@
 
     "internmap": ["internmap@1.0.1", "", {}, "sha512-lDB5YccMydFBtasVtxnZ3MRBHuaoE8GKsppq+EchKL2U4nK/DmEpPHNH8MZe5HkMtpSiTSOZwfN0tzYjO/lJEw=="],
 
-    "minomuncher-core": ["minomuncher-core@0.0.4", "", { "dependencies": { "@haelp/teto": "^3.1.2", "d3": "^7.9.0", "d3-sankey": "^0.12.3", "gaussian-mixture": "^0.9.1" } }, "sha512-Y6VEz7dsd72O1kQ+64Cnik7OgHD8l0RMS3DUAg5+Zs6plS768dyAvXqr50INHHuCnKSWvZS5i/8cgAX24J4cfQ=="],
+    "minomuncher-core": ["minomuncher-core@0.0.5", "", { "dependencies": { "@haelp/teto": "^3.1.5", "d3": "^7.9.0", "d3-sankey": "^0.12.3", "gaussian-mixture": "^0.9.1" } }, "sha512-RzgrSe9QpaGTgaQv+YWQ+Cg9dJCCWAnJtyJ57uBJ+yLyVyEv/d/vlsiJ/gbBpbVqOAZ+1r6W/rXerT42RcPc0Q=="],
 
     "rate-limiter-flexible": ["rate-limiter-flexible@7.1.1", "", {}, "sha512-lsYRcqRSJrKBNt6pMzBJTiCJP5KnwsGWdObMZxd19JFUJRntM+yuHs4/2bs6NZweSLgpsDcykvzyQaumoslWQg=="],
 
