@@ -3,18 +3,22 @@ import { RateLimitedPromiseQueue } from "./promiseQueue";
 import { parseReplay } from "minomuncher-core";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 
-
 const SUPPORTER_IDS = (await Bun.file("supporters.txt").text()).split(/\s+/);
 
 ///important: USE A BOT ACCOUNT
-const TETRIO_USERNAME = Bun.env.TETRIO_USERNAME
-const TETRIO_PASSWORD = Bun.env.TETRIO_PASSWORD
+const TETRIO_USERNAME = Bun.env.TETRIO_USERNAME;
+const TETRIO_PASSWORD = Bun.env.TETRIO_PASSWORD;
+const TETRIO_TOKEN = Bun.env.TETRIO_TOKEN;
 
-if(TETRIO_USERNAME === undefined || TETRIO_PASSWORD === undefined){
-  throw Error("missing env vars TETRIO_USERNAME and/or TETRIO_PASSWORD. REMEMBER TO USE A BOT ACCOUNT")
+if ((TETRIO_USERNAME === undefined || TETRIO_PASSWORD === undefined) && TETRIO_TOKEN === undefined) {
+  throw Error(
+    "missing env vars TETRIO_USERNAME and/or TETRIO_PASSWORD. REMEMBER TO USE A BOT ACCOUNT"
+  );
 }
 
-const token = await ioAuth(TETRIO_USERNAME, TETRIO_PASSWORD);
+const token = TETRIO_TOKEN
+  ? TETRIO_TOKEN
+  : await ioAuth(TETRIO_USERNAME!, TETRIO_PASSWORD!);
 const queryQueue = new RateLimitedPromiseQueue(1000);
 const rateLimiter = new RateLimiterMemory({
   points: 10, // 6 points
@@ -25,8 +29,8 @@ function getClientIp(req: Request): string {
   const forwardedFor = req.headers.get("x-forwarded-for");
   if (forwardedFor) {
     // x-forwarded-for may contain multiple IPs, the first one is the real client
-    const ip = forwardedFor.split(",")[0]
-    if(ip)return ip.trim()
+    const ip = forwardedFor.split(",")[0];
+    if (ip) return ip.trim();
   }
 
   const conn = (req as any).conn; // Bun exposes a `conn` property
@@ -34,7 +38,7 @@ function getClientIp(req: Request): string {
     return conn.remoteAddress;
   }
 
-  return `${Math.random()}`
+  return `${Math.random()}`;
 }
 
 const server = Bun.serve({
@@ -43,8 +47,12 @@ const server = Bun.serve({
   routes: {
     "/status": new Response("OK"),
     "/supporter/:token": (req) => {
-      if(Bun.env.SUPPORTER_TOKEN && Bun.env.SUPPORTER_TOKEN.length > 0 && req.params.token == Bun.env.SUPPORTER_TOKEN){
-        return new Response("OK")
+      if (
+        Bun.env.SUPPORTER_TOKEN &&
+        Bun.env.SUPPORTER_TOKEN.length > 0 &&
+        req.params.token == Bun.env.SUPPORTER_TOKEN
+      ) {
+        return new Response("OK");
       }
       return Response.json({ message: "invalid token" }, { status: 400 });
     },
@@ -57,7 +65,10 @@ const server = Bun.serve({
       const id = req.params.id;
       let rep: string;
       try {
-        rep = await queryQueue.enqueue(() => downloadReplay(id, token), validateReqSupporter(req));
+        rep = await queryQueue.enqueue(
+          () => downloadReplay(id, token),
+          validateReqSupporter(req)
+        );
       } catch (e) {
         return Response.json(
           { message: "error downloading replay" },
@@ -126,10 +137,14 @@ const server = Bun.serve({
   },
 });
 
-function validateReqSupporter<T extends string>(req: Bun.BunRequest<T>){
-  const supporter = req.headers.get("supporter")
-  //what if i was just a pos and inlined everything
-  return (SUPPORTER_IDS.includes(supporter ?? '') || (Bun.env.SUPPORTER_TOKEN && Bun.env.SUPPORTER_TOKEN.length > 0 && supporter == Bun.env.SUPPORTER_TOKEN)) ? 1 : 0
+function validateReqSupporter<T extends string>(req: Bun.BunRequest<T>) {
+  const supporter = req.headers.get("supporter");
+  return SUPPORTER_IDS.includes(supporter ?? "") ||
+    (Bun.env.SUPPORTER_TOKEN &&
+      Bun.env.SUPPORTER_TOKEN.length > 0 &&
+      supporter == Bun.env.SUPPORTER_TOKEN)
+    ? 1
+    : 0;
 }
 
 async function queryPass(apiUrl: string, prio: number) {
